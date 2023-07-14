@@ -57,15 +57,18 @@ def find_note(date):
 
 
 def add_note(title, desc, due_date):
-    pass
+    new_note = note.Note(title, desc, due_date)
+    notes.append(new_note)
+    return new_note
 
 
 def edit_note(note_id, title, desc, due_date):
-    pass
+    delete_note(note_id)
+    add_note(title, desc, due_date)
 
 
 def delete_note(note_id):
-    pass
+    notes.pop(note_id)
 
 
 saved_changes = False
