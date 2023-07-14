@@ -49,11 +49,14 @@ def import_from_file(filename, filetype):
 
 
 def print_all_notes():
-    pass
+    for n in notes:
+        print(n)
 
 
 def find_note(date):
-    pass
+    for n in notes:
+        if n.date == date:
+            print(n)
 
 
 def add_note(title, desc, due_date):
