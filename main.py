@@ -18,7 +18,7 @@ def input_year(prompt=""):
         print("Неверный месяц. По умолчанию текущий.")
         month = datetime.datetime.today().month
     day = int(input("Введите день: "))
-    leap_year = True
+    leap_year = (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
     if day < 1 or day > 31 or ((month == 4 or month == 6 or month == 9 or month == 11) and day > 30) or (
             (month == 2 and not leap_year and day > 28) or (month == 2 and day > 29 and leap_year)):
         print("Неверный день. По умолчанию сегодняшний.")
@@ -49,13 +49,13 @@ def import_from_file(filename, filetype):
 
 
 def print_all_notes():
-    for n in notes:
-        print(n)
+    for i in range(len(notes)):
+        print("ID " + str(i) + " " + str(notes[i]))
 
 
 def find_note(date):
     for n in notes:
-        if n.date == date:
+        if n.due_date == date:
             print(n)
 
 
@@ -123,13 +123,16 @@ while choice != 7:
             print("3 - Выйти")
             field = int(input())
             if field == 0:
-                edit_note(note_id, input("Введите новое имя: "), editing_note.desc, editing_note.due_date)
+                editing_note.title = input("Введите новое имя: ")
+                edit_note(note_id, editing_note.title, editing_note.desc, editing_note.due_date)
                 note_id = -1
             elif field == 1:
-                edit_note(note_id, editing_note.title, input("Введите новое описание: "), editing_note.due_date)
+                editing_note.desc = input("Введите новое описание: ")
+                edit_note(note_id, editing_note.title, editing_note.desc, editing_note.due_date)
                 note_id = -1
             elif field == 2:
-                edit_note(note_id, editing_note.title, editing_note.desc, input_year("Введите новый срок выполнения: "))
+                editing_note.due_date = input_year("Введите новый срок выполнения: ")
+                edit_note(note_id, editing_note.title, editing_note.desc, editing_note.due_date)
                 note_id = -1
             elif field == 3:
                 break
