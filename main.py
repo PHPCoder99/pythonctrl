@@ -1,6 +1,8 @@
 import datetime
 import os.path
 import note
+import csv
+import json
 
 choice = -1
 
@@ -41,11 +43,47 @@ def enter_yn():
 
 
 def save_to_file(filename, filetype):
-    pass
+    with open(filename + "." + filetype, "w") as file:
+        if filetype == "csv":
+            for n in notes:
+                file.write(n.to_csv_fmrt())
+        elif filetype == "json":
+            file.write("[\n")
+            for i in range(len(notes)-1):
+                file.write(notes[i].to_json_fmrt()+",\n")
+            file.write(notes[-1].to_json_fmrt()+"\n")
+            file.write("]")
 
 
 def import_from_file(filename, filetype):
-    pass
+    global notes
+    if filetype == "na":
+        if os.path.exists("./" + filename + ".csv"):
+            with open(filename + ".csv", "r") as file:
+                csvreader = csv.reader(file)
+                for line in csvreader:
+                    notes.append(note.Note.parse_csv(line))
+        elif os.path.exists("./" + filename + ".json"):
+            with open(filename + ".json", "r") as file:
+                for n in json.load(file):
+                    notes.append(note.Note(n["title"], n["desc"], datetime.datetime.strptime(n["due_date"], "%Y/%m/%d")))
+        else:
+            print("Файла не существует.")
+    elif filetype == "csv":
+        if os.path.exists("./" + filename + ".csv"):
+            with open(filename + ".csv", "r") as file:
+                csvreader = csv.reader(file)
+                for line in csvreader:
+                    notes.append(note.Note.parse_csv(line))
+        else:
+            print("Файла не существует.")
+    elif filetype == "json":
+        if os.path.exists("./" + filename + ".json"):
+            with open(filename + ".json", "r") as file:
+                for n in json.load(file):
+                    notes.append(note.Note(n["title"], n["desc"], datetime.datetime.strptime(n["due_date"], "%Y/%m/%d")))
+        else:
+            print("Файла не существует.")
 
 
 def print_all_notes():
@@ -75,7 +113,7 @@ def delete_note(note_id):
 
 
 saved_changes = False
-while choice != 7:
+while True:
     print("Введите номер комманды:")
     print("0 - сохранить изменения в файл")
     print("1 - импортировать записки из файла")
